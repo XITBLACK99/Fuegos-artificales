@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Feliz 24</title>
+    <title>Feliz 24 - Rita</title>
     <style>
         body {
             margin: 0;
@@ -27,56 +27,60 @@
             display: none;
         }
 
-        .numero-20 {
-            font-size: 10rem;
+        .numero-24 {
+            font-size: 8rem;
             font-weight: bold;
             line-height: 1;
-            margin: 0;
+            margin: 10px 0;
             color: #fff;
-            text-shadow: 0 0 30px rgba(255,255,255,0.8);
-            animation: pulse 6s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(255,255,255,0.6), 0 0 40px rgba(255,215,0,0.4);
+            animation: pulse 3s ease-in-out infinite;
         }
 
-        h1 { font-size: 1.2rem; margin-bottom: -10px; font-weight: normal; letter-spacing: 6px; opacity: 0.7; }
-        p { font-size: 1.1rem; margin-top: 15px; font-style: italic; letter-spacing: 3px; opacity: 0.8; }
+        h1 { font-size: 1.2rem; margin-bottom: -5px; font-weight: normal; letter-spacing: 5px; opacity: 0.8; }
+        p { font-size: 1.1rem; margin-top: 10px; font-style: italic; letter-spacing: 3px; opacity: 0.8; }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.03); opacity: 1; }
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
         }
 
         #start-btn {
             position: absolute;
-            padding: 15px 35px;
+            padding: 15px 30px;
             font-size: 1rem;
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             color: #fff;
             border: 1px solid rgba(255,255,255,0.5);
             cursor: pointer;
             z-index: 100;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-transform: uppercase;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
         }
+        
+        #start-btn:hover { background: rgba(255, 255, 255, 0.2); }
 
         #music-control {
             position: absolute;
             top: 20px;
             right: 20px;
             z-index: 200;
-            background: none;
+            background: rgba(0,0,0,0.3);
             border: 1px solid rgba(255,255,255,0.3);
             color: white;
-            padding: 8px;
+            padding: 10px;
             border-radius: 50%;
             cursor: pointer;
             display: none;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
 
     <button id="start-btn">TE TENGO UNA SORPRESA ❤️</button>
-    
     <button id="music-control">🎵</button>
 
     <div id="ui">
@@ -104,8 +108,6 @@
         window.addEventListener('resize', resize);
         resize();
 
-        const boomSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-
         let particles = [];
         let fireworks = [];
 
@@ -117,10 +119,10 @@
                 this.vx = vx;
                 this.vy = vy;
                 this.alpha = 1;
-                this.friction = 0.985;
-                this.gravity = 0.015;
-                this.decay = 0.004;
-                this.size = Math.random() * 1.2 + 0.3;
+                this.friction = 0.97; // Un poco menos de fricción para que duren más
+                this.gravity = 0.08;  // Menos gravedad para que floten más
+                this.decay = Math.random() * 0.01 + 0.005; // Desaparición más lenta
+                this.size = Math.random() * 2 + 0.5;
             }
             draw() {
                 ctx.save();
@@ -128,8 +130,6 @@
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
-                ctx.shadowBlur = 5;
-                ctx.shadowColor = this.color;
                 ctx.fill();
                 ctx.restore();
             }
@@ -148,38 +148,41 @@
                 this.x = Math.random() * canvas.width;
                 this.y = canvas.height;
                 const hue = Math.random() * 360;
-                this.color = `hsl(${hue}, 70%, 70%)`;
-                this.targetY = Math.random() * (canvas.height * 0.45) + 80;
-                this.vy = -Math.random() * 2 - 7;
+                this.color = `hsl(${hue}, 80%, 60%)`;
+                this.targetY = Math.random() * (canvas.height * 0.5) + 50;
+                this.vy = -Math.random() * 3 - 8;
                 this.exploded = false;
             }
             update() {
                 this.y += this.vy;
-                this.vy += 0.04; 
-                if (this.vy >= 0 || this.y <= this.targetY) this.explode();
+                this.vy += 0.1; 
+                if (this.vy >= 0 || this.y <= this.targetY) {
+                    this.explode();
+                }
             }
             draw() {
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, 1.5, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
                 ctx.fillStyle = "#fff";
                 ctx.fill();
             }
             explode() {
                 this.exploded = true;
-                boomSound.cloneNode().play().catch(() => {});
-                for (let i = 0; i < 500; i++) {
+                // --- AJUSTE AQUÍ ---
+                // He aumentado la cantidad de partículas y su velocidad de expansión
+                for (let i = 0; i < 200; i++) { // Más partículas
                     const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 8 + 0.5;
+                    const speed = Math.random() * 10 + 2; // Mayor velocidad de expansión (antes *6 + 1)
                     particles.push(new Particle(this.x, this.y, this.color, Math.cos(angle) * speed, Math.sin(angle) * speed));
                 }
             }
         }
 
         function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            if (Math.random() < 0.01) fireworks.push(new Firework());
+            if (Math.random() < 0.04) fireworks.push(new Firework());
 
             fireworks.forEach((f, i) => {
                 f.update();
@@ -200,9 +203,7 @@
             startBtn.style.display = 'none';
             ui.style.display = 'block';
             musicBtn.style.display = 'block';
-            
-            musica.play().catch(e => console.log("Error con el audio:", e));
-            
+            musica.play().catch(() => console.log("Audio esperando interacción"));
             animate();
         });
 
